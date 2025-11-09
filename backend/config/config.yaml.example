@@ -1,0 +1,24 @@
+# Yayasan ERP - Backend Configuration
+# Copy this file to config.yaml and update values
+
+app:
+  name: "Yayasan ERP"
+  port: 8080
+  environment: "development"
+  debug: true
+
+database:
+  host: "localhost"
+  port: 5432
+  name: "yayasan_erp"
+  user: "yayasan_user"
+  password: "CHANGE_THIS_PASSWORD"
+  sslmode: "disable"
+
+jwt:
+  secret: "CHANGE_THIS_SECRET_MIN_32_CHARS"
+  expiration: 24
+
+cors:
+  allowed_origins:
+    - "http://localhost:3000"
