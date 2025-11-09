@@ -3,17 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    /* DEFINISI VARIABEL CSS UNTUK TEMA */
-    /* Variabel --border diperlukan agar @apply border-border berfungsi */
-    --border: 220 13% 91%; /* Contoh HSL: abu-abu muda */
-    
-    /* Asumsi variabel untuk warna primary */
-    --primary: 220 100% 50%;
-  }
-
   * {
-    /* Sekarang 'border-border' akan mengenali warna dari variabel --border */
     @apply border-border;
   }
   
@@ -23,7 +13,6 @@
 }
 
 @layer components {
-  /* Di sini, kita asumsikan primary-600 dan primary-700 adalah bagian dari extend colors Anda */
   .btn-primary {
     @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors;
   }
