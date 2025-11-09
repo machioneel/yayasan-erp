@@ -2,6 +2,7 @@ package utils
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/yayasan/erp-backend/internal/models"
@@ -122,60 +123,6 @@ func GetClientIP(c *gin.Context) string {
 	}
 
 	// Fallback to RemoteAddr
-	return c.ClientIP()
-}
-
-// GetUserAgent extracts user agent from request
-func GetUserAgent(c *gin.Context) string {
-	return c.GetHeader("User-Agent")
-}
-
-// PaginatedResponse sends paginated success response
-func PaginatedResponse(c *gin.Context, data interface{}, total int64, page int, pageSize int) {
-	totalPages := int(total) / pageSize
-	if int(total)%pageSize > 0 {
-		totalPages++
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Data retrieved successfully",
-		"data":    data,
-		"pagination": gin.H{
-			"total":       total,
-			"page":        page,
-			"page_size":   pageSize,
-			"total_pages": totalPages,
-		},
-	})
-}
-
-// NotFoundResponse sends 404 not found response
-func NotFoundResponse(c *gin.Context, message string) {
-	c.JSON(http.StatusNotFound, ErrorResponse{
-		Success: false,
-		Message: "Not found",
-		Error:   message,
-	})
-}
-
-// GetClientIP extracts client IP from request
-func GetClientIP(c *gin.Context) string {
-	// Check X-Forwarded-For header first
-	if xff := c.GetHeader("X-Forwarded-For"); xff != "" {
-		// Get first IP from comma-separated list
-		if idx := strings.Index(xff, ","); idx != -1 {
-			return strings.TrimSpace(xff[:idx])
-		}
-		return strings.TrimSpace(xff)
-	}
-	
-	// Check X-Real-IP header
-	if xri := c.GetHeader("X-Real-IP"); xri != "" {
-		return strings.TrimSpace(xri)
-	}
-	
-	// Use ClientIP as fallback
 	return c.ClientIP()
 }
 

@@ -76,7 +76,7 @@ type AppConfig struct {
 	MaxPageSize       int
 }
 
-var AppConfig *Config
+var GlobalConfig *Config
 
 // Load loads configuration from environment variables
 func Load() (*Config, error) {
@@ -155,7 +155,7 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("JWT_SECRET must be changed in production")
 	}
 
-	AppConfig = config
+	GlobalConfig = config
 	return config, nil
 }
 

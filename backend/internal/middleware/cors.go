@@ -10,11 +10,11 @@ import (
 // CORSMiddleware configures CORS settings
 func CORSMiddleware() gin.HandlerFunc {
 	return cors.New(cors.Config{
-		AllowOrigins:     config.AppConfig.CORS.Origins,
+		AllowOrigins:     config.GlobalConfig.CORS.Origins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", "X-Requested-With"},
 		ExposeHeaders:    []string{"Content-Length", "Content-Type"},
-		AllowCredentials: config.AppConfig.CORS.AllowCredentials,
+		AllowCredentials: config.GlobalConfig.CORS.AllowCredentials,
 		MaxAge:           12 * time.Hour,
 	})
 }

@@ -256,10 +256,8 @@ func (r *journalRepository) GenerateJournalNumber(branchCode string, date time.T
 	var sequence int
 	if err == nil {
 		// Extract sequence from last number
-		// Parse the last 4 digits
-		lastNum := lastJournal.JournalNumber[len(prefix):]
-		// Convert to int and increment
-		sequence = 1 // Simple increment for now
+		// Simple increment for now
+		sequence = 1
 	} else {
 		sequence = 1
 	}

@@ -52,7 +52,7 @@ func (s *assetService) GetAll(params *models.PaginationParams) (*models.Paginati
 		params.Page = 1
 	}
 	if params.PageSize < 1 {
-		params.PageSize = config.AppConfig.App.DefaultPageSize
+		params.PageSize = config.GlobalConfig.App.DefaultPageSize
 	}
 
 	assets, total, err := s.assetRepo.GetAll(params)

@@ -18,7 +18,7 @@ func Connect(cfg *config.DatabaseConfig) (*gorm.DB, error) {
 	dsn := cfg.GetDSN()
 
 	var gormLogger logger.Interface
-	if config.AppConfig.IsDevelopment() {
+	if config.GlobalConfig.IsDevelopment() {
 		gormLogger = logger.Default.LogMode(logger.Info)
 	} else {
 		gormLogger = logger.Default.LogMode(logger.Error)

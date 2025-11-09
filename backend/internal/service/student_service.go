@@ -44,7 +44,7 @@ func (s *studentService) GetAll(params *models.PaginationParams) (*models.Pagina
 		params.Page = 1
 	}
 	if params.PageSize < 1 {
-		params.PageSize = config.AppConfig.App.DefaultPageSize
+		params.PageSize = config.GlobalConfig.App.DefaultPageSize
 	}
 
 	students, total, err := s.studentRepo.GetAll(params)
@@ -80,7 +80,7 @@ func (s *studentService) GetByBranch(branchID uuid.UUID, params *models.Paginati
 		params.Page = 1
 	}
 	if params.PageSize < 1 {
-		params.PageSize = config.AppConfig.App.DefaultPageSize
+		params.PageSize = config.GlobalConfig.App.DefaultPageSize
 	}
 
 	students, total, err := s.studentRepo.GetByBranch(branchID, params)

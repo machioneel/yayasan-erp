@@ -42,7 +42,7 @@ func (s *employeeService) GetAll(params *models.PaginationParams) (*models.Pagin
 		params.Page = 1
 	}
 	if params.PageSize < 1 {
-		params.PageSize = config.AppConfig.App.DefaultPageSize
+		params.PageSize = config.GlobalConfig.App.DefaultPageSize
 	}
 
 	employees, total, err := s.employeeRepo.GetAll(params)

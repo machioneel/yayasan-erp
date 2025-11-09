@@ -47,10 +47,10 @@ func (s *journalService) GetAll(params *models.PaginationParams) (*models.Journa
 		params.Page = 1
 	}
 	if params.PageSize < 1 {
-		params.PageSize = config.AppConfig.App.DefaultPageSize
+		params.PageSize = config.GlobalConfig.App.DefaultPageSize
 	}
-	if params.PageSize > config.AppConfig.App.MaxPageSize {
-		params.PageSize = config.AppConfig.App.MaxPageSize
+	if params.PageSize > config.GlobalConfig.App.MaxPageSize {
+		params.PageSize = config.GlobalConfig.App.MaxPageSize
 	}
 
 	journals, total, err := s.journalRepo.GetAll(params)
@@ -87,7 +87,7 @@ func (s *journalService) GetByStatus(status string, params *models.PaginationPar
 		params.Page = 1
 	}
 	if params.PageSize < 1 {
-		params.PageSize = config.AppConfig.App.DefaultPageSize
+		params.PageSize = config.GlobalConfig.App.DefaultPageSize
 	}
 
 	journals, total, err := s.journalRepo.GetByStatus(status, params)

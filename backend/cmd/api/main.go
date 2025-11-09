@@ -43,7 +43,7 @@ func main() {
 	}
 
 	// Initialize Gin
-	if config.AppConfig.App.Env == "production" {
+	if config.GlobalConfig.App.Env == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router := gin.New()
@@ -121,19 +121,19 @@ func main() {
 	appRouter.Setup(router)
 
 	// Create server
-	addr := fmt.Sprintf("%s:%s", config.AppConfig.Server.Host, config.AppConfig.Server.Port)
+	addr := fmt.Sprintf("%s:%s", config.GlobalConfig.Server.Host, config.GlobalConfig.Server.Port)
 	srv := &http.Server{
 		Addr:         addr,
 		Handler:      router,
-		ReadTimeout:  time.Duration(config.AppConfig.Server.ReadTimeout) * time.Second,
-		WriteTimeout: time.Duration(config.AppConfig.Server.WriteTimeout) * time.Second,
-		IdleTimeout:  time.Duration(config.AppConfig.Server.IdleTimeout) * time.Second,
+		ReadTimeout:  time.Duration(config.GlobalConfig.Server.ReadTimeout) * time.Second,
+		WriteTimeout: time.Duration(config.GlobalConfig.Server.WriteTimeout) * time.Second,
+		IdleTimeout:  time.Duration(config.GlobalConfig.Server.IdleTimeout) * time.Second,
 	}
 
 	// Start server in goroutine
 	go func() {
 		log.Printf("🚀 Server starting on %s", addr)
-		log.Printf("📝 Environment: %s", config.AppConfig.App.Env)
+		log.Printf("📝 Environment: %s", config.GlobalConfig.App.Env)
 		log.Printf("🌐 API Base URL: http://%s/api/v1", addr)
 		log.Printf("❤️  Health Check: http://%s/health", addr)
 		

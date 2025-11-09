@@ -43,7 +43,7 @@ func (s *invoiceService) GetAll(params *models.PaginationParams) (*models.Pagina
 		params.Page = 1
 	}
 	if params.PageSize < 1 {
-		params.PageSize = config.AppConfig.App.DefaultPageSize
+		params.PageSize = config.GlobalConfig.App.DefaultPageSize
 	}
 
 	invoices, total, err := s.invoiceRepo.GetAll(params)

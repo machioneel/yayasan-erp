@@ -35,10 +35,10 @@ func (s *branchService) GetAll(params *models.PaginationParams) ([]models.Branch
 		params.Page = 1
 	}
 	if params.PageSize < 1 {
-		params.PageSize = config.AppConfig.App.DefaultPageSize
+		params.PageSize = config.GlobalConfig.App.DefaultPageSize
 	}
-	if params.PageSize > config.AppConfig.App.MaxPageSize {
-		params.PageSize = config.AppConfig.App.MaxPageSize
+	if params.PageSize > config.GlobalConfig.App.MaxPageSize {
+		params.PageSize = config.GlobalConfig.App.MaxPageSize
 	}
 
 	return s.branchRepo.GetAll(params)

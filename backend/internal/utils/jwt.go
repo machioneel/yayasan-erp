@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -29,7 +30,7 @@ type Claims struct {
 // GenerateToken generates JWT access token
 func GenerateToken(userID uuid.UUID, username, email string, branchID *uuid.UUID, isSuperAdmin bool, permissions []string) (string, error) {
 	now := time.Now()
-	expiresAt := now.Add(config.AppConfig.JWT.Expiry)
+	expiresAt := now.Add(config.GlobalConfig.JWT.Expiry)
 
 	claims := &Claims{
 		UserID:       userID,
@@ -49,13 +50,13 @@ func GenerateToken(userID uuid.UUID, username, email string, branchID *uuid.UUID
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.AppConfig.JWT.Secret))
+	return token.SignedString([]byte(config.GlobalConfig.JWT.Secret))
 }
 
 // GenerateRefreshToken generates JWT refresh token
 func GenerateRefreshToken(userID uuid.UUID, username string) (string, error) {
 	now := time.Now()
-	expiresAt := now.Add(config.AppConfig.JWT.RefreshExpiry)
+	expiresAt := now.Add(config.GlobalConfig.JWT.RefreshExpiry)
 
 	claims := &Claims{
 		UserID:    userID,
@@ -71,7 +72,7 @@ func GenerateRefreshToken(userID uuid.UUID, username string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.AppConfig.JWT.Secret))
+	return token.SignedString([]byte(config.GlobalConfig.JWT.Secret))
 }
 
 // ValidateToken validates JWT token and returns claims
@@ -81,7 +82,7 @@ func ValidateToken(tokenString string) (*Claims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, ErrInvalidToken
 		}
-		return []byte(config.AppConfig.JWT.Secret), nil
+		return []byte(config.GlobalConfig.JWT.Secret), nil
 	})
 
 	if err != nil {
@@ -140,24 +141,4 @@ func ExtractTokenFromHeader(authHeader string) (string, error) {
 	}
 
 	return authHeader[len(bearerPrefix):], nil
-}
-
-// ExtractTokenFromHeader extracts JWT token from Authorization header
-func ExtractTokenFromHeader(authHeader string) (string, error) {
-	if authHeader == "" {
-		return "", errors.New("authorization header is required")
-	}
-
-	// Check if header starts with "Bearer "
-	if !strings.HasPrefix(authHeader, "Bearer ") {
-		return "", errors.New("invalid authorization header format")
-	}
-
-	// Extract token
-	token := strings.TrimPrefix(authHeader, "Bearer ")
-	if token == "" {
-		return "", errors.New("token is empty")
-	}
-
-	return token, nil
 }
