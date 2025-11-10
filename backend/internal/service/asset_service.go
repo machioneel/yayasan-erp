@@ -15,23 +15,23 @@ type AssetService interface {
 	GetAll(params *models.PaginationParams) (*models.PaginationResponse, error)
 	GetByID(id uuid.UUID) (*models.Asset, error)
 	GetByBranch(branchID uuid.UUID) ([]models.Asset, error)
+	Search(keyword string) ([]models.Asset, error) // <-- DIPERBAIKI: Ditambahkan
 	Create(req *models.CreateAssetRequest) (*models.Asset, error)
 	Update(id uuid.UUID, req *models.CreateAssetRequest) (*models.Asset, error)
 	Delete(id uuid.UUID) error
-	
-	
+
 	// Depreciation
-	CalculateDepreciation(assetID uuid.UUID, period string) error
+	CalculateDepreciation(assetID uuid.UUID, period string) (*models.AssetDepreciation, error) // <-- DIPERBAIKI: Nilai kembali diubah
 	ProcessMonthlyDepreciation(period string) ([]models.AssetDepreciation, error)
-	
+
 	// Maintenance
 	CreateMaintenance(req *models.CreateMaintenanceRequest) (*models.AssetMaintenance, error)
 	GetUpcomingMaintenance() ([]models.AssetMaintenance, error)
-	
+
 	// Transfer
 	CreateTransfer(req *models.CreateTransferRequest, userID uuid.UUID) (*models.AssetTransfer, error)
 	ApproveTransfer(transferID, userID uuid.UUID) error
-	
+
 	// Statistics
 	GetStatistics() (map[string]interface{}, error)
 }
@@ -86,6 +86,11 @@ func (s *assetService) GetByID(id uuid.UUID) (*models.Asset, error) {
 
 func (s *assetService) GetByBranch(branchID uuid.UUID) ([]models.Asset, error) {
 	return s.assetRepo.GetByBranch(branchID)
+}
+
+// DIPERBAIKI: Fungsi Search ditambahkan
+func (s *assetService) Search(keyword string) ([]models.Asset, error) {
+	return s.assetRepo.Search(keyword)
 }
 
 func (s *assetService) Create(req *models.CreateAssetRequest) (*models.Asset, error) {
@@ -154,14 +159,15 @@ func (s *assetService) Delete(id uuid.UUID) error {
 	return s.assetRepo.Delete(id)
 }
 
-func (s *assetService) CalculateDepreciation(assetID uuid.UUID, period string) error {
+// DIPERBAIKI: Tanda tangan fungsi dan nilai kembali diubah
+func (s *assetService) CalculateDepreciation(assetID uuid.UUID, period string) (*models.AssetDepreciation, error) {
 	asset, err := s.assetRepo.GetByID(assetID)
 	if err != nil {
-		return err
+		return nil, err // DIPERBAIKI
 	}
 
 	if asset.UsefulLife == 0 {
-		return errors.New("useful life not set")
+		return nil, errors.New("useful life not set") // DIPERBAIKI
 	}
 
 	var depreciationAmount float64
@@ -190,14 +196,18 @@ func (s *assetService) CalculateDepreciation(assetID uuid.UUID, period string) e
 	}
 
 	if err := s.assetRepo.CreateDepreciation(depreciation); err != nil {
-		return err
+		return nil, err // DIPERBAIKI
 	}
 
 	// Update asset
 	asset.AccumulatedDepreciation = newAccumulated
 	asset.BookValue = newBookValue
 
-	return s.assetRepo.Update(asset)
+	// DIPERBAIKI: Mengembalikan record depresiasi yang baru dibuat
+	if err := s.assetRepo.Update(asset); err != nil {
+		return nil, err
+	}
+	return depreciation, nil
 }
 
 func (s *assetService) ProcessMonthlyDepreciation(period string) ([]models.AssetDepreciation, error) {
@@ -210,9 +220,12 @@ func (s *assetService) ProcessMonthlyDepreciation(period string) ([]models.Asset
 
 	for _, asset := range assets {
 		if asset.UsefulLife > 0 && asset.DepreciationMethod != "" {
-			if err := s.CalculateDepreciation(asset.ID, period); err != nil {
+			// DIPERBAIKI: Menangkap record depresiasi
+			depreciation, err := s.CalculateDepreciation(asset.ID, period)
+			if err != nil {
 				continue
 			}
+			depreciations = append(depreciations, *depreciation) // Menambahkan record ke slice
 		}
 	}
 

@@ -278,7 +278,7 @@ func (h *EmployeeHandler) GenerateBulkPayroll(c *gin.Context) {
 	}
 
 	// Parse payment date
-	paymentDate, err := utils.ParseDate(req.PaymentDate)
+	paymentDate, err := utils.ParseDate(req.PaymentDate) // Baris ini yang menyebabkan eror
 	if err != nil {
 		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid payment date format")
 		return
