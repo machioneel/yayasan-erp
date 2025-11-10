@@ -1,160 +1,247 @@
-# Yayasan As-Salam Joglo - ERP System
+# Yayasan ERP - Frontend Web Application
 
-Enterprise Resource Planning system untuk Yayasan Masjid dan Perguruan As-Salam Joglo.
-
-## 📊 Project Status
-
-**Current Phase:** Phase 1 - Foundation ✅ **COMPLETE!**  
-**Progress:** 100% of Authentication Module  
-**Next:** Phase 2 - Finance & Accounting Module
-
-## 🎯 Features
-
-### ✅ Implemented (Phase 1)
-- ✅ Multi-branch/multi-unit support
-- ✅ Role-based access control (RBAC)
-- ✅ JWT Authentication
-- ✅ User management
-- ✅ Branch management
-- ✅ Role & Permission management
-- ✅ Audit logging
-- ✅ API documentation ready
-
-### 🔄 In Development (Phase 2)
-- Chart of Accounts (COA) management
-- Journal Entry system (Maker-Checker-Approver)
-- Fund accounting (restricted/unrestricted)
-- Donor tracking
-- Budget management
-- Financial reports
-
-### ⏳ Planned (Phase 3+)
-- Asset management & depreciation
-- Inventory management
-- Purchase management
-- CRM/Donor management
-- Advanced reporting & analytics
-
-## 🛠 Tech Stack
-
-### Backend
-- **Language:** Go 1.21+
-- **Framework:** Gin
-- **ORM:** GORM
-- **Database:** PostgreSQL 15+
-- **Authentication:** JWT (golang-jwt)
-- **Validation:** validator/v10
-- **Password Hashing:** bcrypt
+Modern React + TypeScript frontend for Yayasan ERP System.
 
 ## 🚀 Quick Start
 
-### 1. Setup Database
+### Prerequisites
+- Node.js 18+ and npm
+- Backend API running on http://localhost:8080
+
+### Installation
 
 ```bash
-# Create database
-createdb yayasan_erp
+# Install dependencies
+npm install
 
-# Create schema
-psql yayasan_erp < database/schema/complete_schema.sql
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-### 2. Generate Password Hash
+The app will run on **http://localhost:3000**
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── common/         # Buttons, inputs, cards, etc
+│   ├── layout/         # Sidebar, header, footer
+│   ├── auth/           # Login form, etc
+│   └── dashboard/      # Dashboard widgets
+├── pages/              # Page components
+│   ├── auth/           # Login, register pages
+│   ├── dashboard/      # Dashboard page
+│   ├── students/       # Student management pages
+│   ├── finance/        # Finance pages
+│   ├── employees/      # HR pages
+│   ├── assets/         # Asset management pages
+│   └── inventory/      # Inventory pages
+├── services/           # API service layers
+├── hooks/              # Custom React hooks
+├── types/              # TypeScript type definitions
+├── utils/              # Utility functions
+├── store/              # Zustand state management
+└── layouts/            # Layout components
+```
+
+## 🎨 Tech Stack
+
+- **Framework:** React 18 + TypeScript
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS
+- **State Management:** Zustand + React Query
+- **Routing:** React Router v6
+- **Forms:** React Hook Form + Zod
+- **HTTP Client:** Axios
+- **Icons:** Lucide React
+- **Charts:** Recharts
+
+## 🔑 Default Login
+
+```
+Username: admin
+Password: admin123
+```
+
+## 📋 Available Pages (To Be Created)
+
+### Core Pages
+- [x] Login Page
+- [ ] Dashboard
+- [ ] Profile
+
+### Student Management
+- [ ] Student List
+- [ ] Student Detail
+- [ ] Add/Edit Student
+- [ ] Student Invoices
+- [ ] Payment Processing
+
+### Finance & Accounting
+- [ ] Chart of Accounts
+- [ ] Journal Entries
+- [ ] Financial Reports
+- [ ] Budget Management
+
+### HR & Payroll
+- [ ] Employee List
+- [ ] Employee Detail
+- [ ] Payroll Processing
+- [ ] Attendance
+- [ ] Leave Management
+
+### Asset Management
+- [ ] Asset List
+- [ ] Asset Detail
+- [ ] Maintenance Schedule
+- [ ] Depreciation Report
+
+### Inventory
+- [ ] Inventory Items
+- [ ] Stock Transactions
+- [ ] Stock Opname
+- [ ] Purchase Orders
+
+## 🎯 Features
+
+### Implemented
+- ✅ API Service with interceptors
+- ✅ Authentication (Login/Logout)
+- ✅ Protected Routes
+- ✅ Token Management
+- ✅ Type Definitions
+- ✅ Utility Functions
+- ✅ State Management
+
+### To Be Implemented
+- [ ] Dashboard with statistics
+- [ ] CRUD operations for all modules
+- [ ] Form validation
+- [ ] Data tables with pagination
+- [ ] Charts and graphs
+- [ ] Export to Excel/PDF
+- [ ] Print functionality
+- [ ] Dark mode
+- [ ] Multi-language
+
+## 🔧 Environment Variables
+
+Create `.env` file:
+
+```env
+VITE_API_URL=http://localhost:8080/api/v1
+```
+
+## 📝 API Integration
+
+All API calls go through `/src/services/api.ts` which:
+- Adds Bearer token to requests
+- Handles 401 (Unauthorized) redirects
+- Provides error handling
+- Manages request/response interceptors
+
+## 🎨 Styling
+
+Using **Tailwind CSS** with custom configuration:
+- Primary color palette
+- Responsive design
+- Dark mode ready
+- Custom components
+
+## 🔐 Authentication Flow
+
+1. User submits login form
+2. Frontend calls `/api/v1/auth/login`
+3. Backend returns JWT token + user data
+4. Token stored in localStorage
+5. Token added to all subsequent requests
+6. On 401 error, redirect to login
+
+## 📦 Build & Deploy
 
 ```bash
-cd backend
-go run cmd/hashpass/main.go "Admin123!"
-# Copy the generated hash
+# Build for production
+npm run build
+
+# Output directory: dist/
+# Deploy to: Nginx, Apache, Vercel, Netlify, etc.
 ```
 
-### 3. Update Seed Data
+### Nginx Configuration Example
 
-Edit `database/seeds/initial_data.sql`:
-- Replace `$2a$10$YourBcryptHashHere` with actual hash
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+    root /var/www/yayasan-erp/dist;
+    index index.html;
 
-### 4. Seed Initial Data
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
 
-```bash
-psql yayasan_erp < database/seeds/initial_data.sql
+    location /api {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
 ```
 
-### 5. Configure Backend
+## 🐛 Troubleshooting
 
-```bash
-cd backend
-cp .env.example .env
-# Edit .env with your settings
+### CORS Issues
+Make sure backend allows frontend origin:
+```go
+// In backend: internal/routes/routes.go
+router.Use(cors.New(cors.Config{
+    AllowOrigins: []string{"http://localhost:3000"},
+    AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
+    AllowHeaders: []string{"Authorization", "Content-Type"},
+}))
 ```
 
-### 6. Run Server
+### API Connection Failed
+1. Check backend is running on port 8080
+2. Check VITE_API_URL in .env
+3. Check browser console for errors
 
-```bash
-go mod download
-go run cmd/api/main.go
-```
+## 📚 Next Steps
 
-Server starts at http://localhost:8080
+1. **Create Components:**
+   - Button, Input, Card, Table
+   - Modal, Alert, Loading
 
-## 🧪 Testing
+2. **Create Pages:**
+   - Dashboard with stats
+   - Student list with filters
+   - Invoice generation
+   - Payroll processing
 
-```bash
-# Health check
-curl http://localhost:8080/health
+3. **Add Features:**
+   - Data export
+   - Print functionality
+   - Advanced filters
+   - Bulk operations
 
-# Login
-curl -X POST http://localhost:8080/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"login":"admin","password":"Admin123!"}'
-```
+## 🤝 Contributing
 
-## 🔐 Default Users
+1. Create feature branch
+2. Make changes
+3. Test thoroughly
+4. Submit PR
 
-| Username | Password | Role |
-|----------|----------|------|
-| admin | Admin123! | Super Administrator |
-| bendahara.umum | Admin123! | Bendahara Umum |
+## 📄 License
 
-**⚠️ Change these in production!**
-
-## 📚 API Documentation
-
-See full API docs at: [API Documentation](docs/api/)
-
-### Key Endpoints
-
-- `POST /api/v1/auth/login` - Login
-- `GET /api/v1/auth/me` - Get current user
-- `GET /api/v1/users` - List users
-- `GET /api/v1/branches` - List branches
-- `GET /api/v1/roles` - List roles
-
-## 🏢 Default Branches
-
-- YAY - Sekretariat
-- SDI - Sekolah Dasar Islam
-- TKI - Taman Kanak-kanak
-- TPA - Taman Pendidikan Al-Quran
-- MAD - Madrasah
-- BKM - Kemakmuran Masjid
-- AYD - Anak Yatim & Dhuafa
-
-## 🔧 Troubleshooting
-
-**Port in use:**
-```bash
-lsof -i :8080
-kill -9 <PID>
-```
-
-**DB connection error:**
-```bash
-pg_isready
-psql -l | grep yayasan_erp
-```
-
-## 📝 License
-
-Proprietary - Yayasan As-Salam Joglo
+Private - Yayasan ERP System
 
 ---
 
-**Built with ❤️ for Yayasan As-Salam Joglo**
+**Need help?** Check the API documentation or contact support.
