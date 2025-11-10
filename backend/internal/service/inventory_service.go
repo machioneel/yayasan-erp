@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"time"
+	//"time" // Sudah benar dikomentari karena tidak terpakai
 
 	"github.com/google/uuid"
 	"github.com/yayasan/erp-backend/internal/config"
@@ -93,7 +93,9 @@ func (s *inventoryService) SearchItems(keyword string) ([]models.InventoryItem, 
 
 func (s *inventoryService) CreateItem(req *models.CreateInventoryItemRequest) (*models.InventoryItem, error) {
 	// Validate branch
-	branch, err := s.branchRepo.GetByID(req.BranchID)
+	// --- INI PERBAIKANNYA ---
+	// Kita hanya perlu mengecek error-nya, bukan menggunakan variabel 'branch'
+	_, err := s.branchRepo.GetByID(req.BranchID)
 	if err != nil {
 		return nil, errors.New("branch not found")
 	}

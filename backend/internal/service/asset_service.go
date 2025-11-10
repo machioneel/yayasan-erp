@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 	"math"
-	"time"
+	//"time"
 
 	"github.com/google/uuid"
 	"github.com/yayasan/erp-backend/internal/config"
@@ -18,6 +18,7 @@ type AssetService interface {
 	Create(req *models.CreateAssetRequest) (*models.Asset, error)
 	Update(id uuid.UUID, req *models.CreateAssetRequest) (*models.Asset, error)
 	Delete(id uuid.UUID) error
+	
 	
 	// Depreciation
 	CalculateDepreciation(assetID uuid.UUID, period string) error

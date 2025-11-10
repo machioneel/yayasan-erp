@@ -21,12 +21,7 @@ import (
 )
 
 func main() {
-	// Load configuration
-	if err := config.LoadConfig(); err != nil {
-		log.Fatal("Failed to load configuration:", err)
-	}
-
-	// Initialize database
+	// Initialize database (which also loads config)
 	if err := database.InitDB(); err != nil {
 		log.Fatal("Failed to initialize database:", err)
 	}
@@ -53,22 +48,25 @@ func main() {
 	router.Use(middleware.LoggerMiddleware())
 	router.Use(middleware.CORSMiddleware())
 
+	// Get database instance
+	db := database.GetDB()
+
 	// Initialize repositories
-	userRepo := repository.NewUserRepository(database.DB)
-	branchRepo := repository.NewBranchRepository(database.DB)
-	roleRepo := repository.NewRoleRepository(database.DB)
-	accountRepo := repository.NewAccountRepository(database.DB)
-	journalRepo := repository.NewJournalRepository(database.DB)
-	budgetRepo := repository.NewBudgetRepository(database.DB)
-	fiscalYearRepo := repository.NewFiscalYearRepository(database.DB)
-	studentRepo := repository.NewStudentRepository(database.DB)
-	parentRepo := repository.NewParentRepository(database.DB)
-	paymentRepo := repository.NewPaymentRepository(database.DB)
-	invoiceRepo := repository.NewInvoiceRepository(database.DB)
-	employeeRepo := repository.NewEmployeeRepository(database.DB)
-	payrollRepo := repository.NewPayrollRepository(database.DB)
-	assetRepo := repository.NewAssetRepository(database.DB)
-	inventoryRepo := repository.NewInventoryRepository(database.DB)
+	userRepo := repository.NewUserRepository(db)
+	branchRepo := repository.NewBranchRepository(db)
+	roleRepo := repository.NewRoleRepository(db)
+	accountRepo := repository.NewAccountRepository(db)
+	journalRepo := repository.NewJournalRepository(db)
+	budgetRepo := repository.NewBudgetRepository(db)
+	fiscalYearRepo := repository.NewFiscalYearRepository(db)
+	studentRepo := repository.NewStudentRepository(db)
+	parentRepo := repository.NewParentRepository(db)
+	paymentRepo := repository.NewPaymentRepository(db)
+	invoiceRepo := repository.NewInvoiceRepository(db)
+	employeeRepo := repository.NewEmployeeRepository(db)
+	payrollRepo := repository.NewPayrollRepository(db)
+	assetRepo := repository.NewAssetRepository(db)
+	inventoryRepo := repository.NewInventoryRepository(db)
 
 	// Initialize services
 	authService := service.NewAuthService(userRepo, roleRepo)
@@ -77,8 +75,8 @@ func main() {
 	roleService := service.NewRoleService(roleRepo)
 	accountService := service.NewAccountService(accountRepo)
 	journalService := service.NewJournalService(journalRepo, accountRepo, branchRepo)
-	budgetService := service.NewBudgetService(database.DB, budgetRepo, accountRepo, fiscalYearRepo)
-	reportService := service.NewReportService(database.DB, accountRepo, journalRepo)
+	budgetService := service.NewBudgetService(db, budgetRepo, accountRepo, fiscalYearRepo)
+	reportService := service.NewReportService(db, accountRepo, journalRepo)
 	studentService := service.NewStudentService(studentRepo, parentRepo, branchRepo)
 	paymentService := service.NewPaymentService(paymentRepo, invoiceRepo, branchRepo, studentRepo)
 	invoiceService := service.NewInvoiceService(invoiceRepo, studentRepo, branchRepo)

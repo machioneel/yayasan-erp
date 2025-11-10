@@ -22,9 +22,13 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port        string
-	Environment string
-	AppName     string
+	Host         string
+	Port         string
+	Environment  string
+	AppName      string
+	ReadTimeout  int
+	WriteTimeout int
+	IdleTimeout  int
 }
 
 type DatabaseConfig struct {
@@ -63,17 +67,18 @@ type EmailConfig struct {
 }
 
 type AppConfig struct {
-	EnableAuditLog    bool
-	EnableMultiBranch bool
-	EnableMultiCurrency bool
-	DefaultCurrency   string
-	DefaultLanguage   string
-	DefaultTimezone   string
-	FiscalYearStart   int
-	RateLimitEnabled  bool
-	RateLimitPerMin   int
-	DefaultPageSize   int
-	MaxPageSize       int
+	Env                  string
+	EnableAuditLog       bool
+	EnableMultiBranch    bool
+	EnableMultiCurrency  bool
+	DefaultCurrency      string
+	DefaultLanguage      string
+	DefaultTimezone      string
+	FiscalYearStart      int
+	RateLimitEnabled     bool
+	RateLimitPerMin      int
+	DefaultPageSize      int
+	MaxPageSize          int
 }
 
 var GlobalConfig *Config
@@ -97,9 +102,13 @@ func Load() (*Config, error) {
 
 	config := &Config{
 		Server: ServerConfig{
-			Port:        getEnv("PORT", "8080"),
-			Environment: getEnv("ENV", "development"),
-			AppName:     getEnv("APP_NAME", "Yayasan ERP"),
+			Host:         getEnv("SERVER_HOST", "localhost"),
+			Port:         getEnv("PORT", "8080"),
+			Environment:  getEnv("ENV", "development"),
+			AppName:      getEnv("APP_NAME", "Yayasan ERP"),
+			ReadTimeout:  getEnvAsInt("READ_TIMEOUT", 30),
+			WriteTimeout: getEnvAsInt("WRITE_TIMEOUT", 30),
+			IdleTimeout:  getEnvAsInt("IDLE_TIMEOUT", 60),
 		},
 		Database: DatabaseConfig{
 			Host:     getEnv("DB_HOST", "localhost"),
@@ -132,6 +141,7 @@ func Load() (*Config, error) {
 			SMTPFrom:     getEnv("SMTP_FROM", "noreply@yayasan.org"),
 		},
 		App: AppConfig{
+			Env:                 getEnv("ENV", "development"),
 			EnableAuditLog:      getEnvAsBool("ENABLE_AUDIT_LOG", true),
 			EnableMultiBranch:   getEnvAsBool("ENABLE_MULTI_BRANCH", true),
 			EnableMultiCurrency: getEnvAsBool("ENABLE_MULTI_CURRENCY", false),

@@ -2,7 +2,6 @@ package utils
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/yayasan/erp-backend/internal/models"
