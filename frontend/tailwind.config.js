@@ -7,6 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        border: "hsl(var(--border))",
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',
@@ -18,6 +19,7 @@ export default {
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
+          
         },
       },
     },
